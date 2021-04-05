@@ -1,0 +1,239 @@
+{% extends "feed/layout.html" %}
+{% load static %}
+{% block cssfiles %}
+{% endblock cssfiles %}
+
+{% block navbar %}
+    {% with fr=friend_request %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock navbar %}
+{% block searchform %}
+    <form class="form-inline my-2 my-lg-0 ml-5" action="{% url 'search_posts' %}" method="get">
+        <input name="p" type="text" placeholder="Search posts..">
+        <button class="btn btn-success my-2 my-sm-0 ml-4" type="submit">Search</button>
+    </form>
+{% endblock searchform %}
+{% block content %}
+    <!-- Tranding-select and banner Area -->
+    <ul class="tranding_select tabs">
+        {#        <li class="tab"><a href="#latest" class="waves-effect btn active">Latest</a></li>#}
+        {#        <li class="tab"><a href="#trending" class="waves-effect btn">Trending</a></li>#}
+        {#        <li class="tab"><a href="#featured" class="waves-effect btn">Featured</a></li>#}
+    </ul>
+    <div class="banner_area">
+        <img src="{% static 'images/banner.jpg' %}" alt="" class="banner_img">
+    </div>
+    <!-- End Tranding Area -->
+
+    <!-- Min Container area -->
+    <section class="min_container min_pages">
+        <div class="section_row">
+            <div class="middle_section col" id="infinite_scroll">
+                <div id="latest">
+                    <!-- Post -->
+                    <div class="fast_post">
+                        {% for post in posts %}
+                            <div class="post">
+                                <div class="post_content">
+                                    <a href="{% url 'post-detail' post.id %}" class="post_img">
+                                        <img src="{{ post.pic.url }}" alt="">
+                                        <span><i class="ion-android-radio-button-off"></i>{{ post.tags }}</span>
+                                    </a>
+                                    <div class="row author_area">
+                                        <div class="col s4 author">
+                                            <div class="col s4 media_left"><img
+                                                    style="max-width: 50px;"
+                                                    src="{{ post.user_name.profile.image.url }}" alt=""
+                                                    class="circle img-responsive"></div>
+                                            <div class="col s8 media_body">
+                                                <a href="{% url 'profile_view' post.user_name %}">{{ post.user_name }}</a>
+                                                <span>{{ post.date_posted | date:'F j, Y, g:i a' }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col s4 btn_floating">
+                                            {#                                            <a class="btn-floating waves-effect"><i class="ion-navicon-round"></i></a>#}
+                                        </div>
+                                        <div class="col s4 like_user">
+                                            <ul class="like_img">
+                                                <li>
+                                                    <ul class="hide_sm">
+                                                        <li><a href="#" class="single_l_1"><img
+                                                                src="{% static 'images/like-client-1.png' %}"
+                                                                alt=""></a></li>
+                                                        <li><a href="#" class="single_l"><img
+                                                                src="{% static 'images/like-client-4.png' %}"
+                                                                alt="a"></a></li>
+                                                        <li><a href="#" class="single_l"><img
+                                                                src="{% static 'images/like-client-3.png' %}"
+                                                                alt="b"></a></li>
+                                                        <li><a href="#" class="single_l"><img
+                                                                src="{% static 'images/like-client-4.png' %}"
+                                                                alt="c"></a></li>
+                                                        <li><a href="#" class="mor_like">+8 more</a></li>
+                                                    </ul>
+                                                </li>
+                                                <li class="post_d"><a class="dropdown-button waves-effect" href="#!"
+                                                                      data-activates="post_dropdown"><i
+                                                        class="ion-android-more-vertical"></i></a>
+                                                    <!-- Dropdown Structure -->
+                                                    <ul id="post_dropdown" class="dropdown-content">
+                                                        <li><a href="#">Report as spam</a></li>
+                                                        <li><a href="#">Read later</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {#                                <a href="details.html" class="post_heding">{{ post.description }}</a>#}
+                                    <p>{{ post.description }}</p>
+                                </div>
+
+                                <div class="like_comment_area row">
+
+                                    {% comment %}<button style="margin-left: 5px;" class="btn btn-sm btn-white mr-3 like"
+                                            id="{{ post.id }}">
+                                        {% if post in liked_post %}
+                                            <a href="{% url 'post-like' %}" style="color:red;"
+                                               id="likebtn{{ post.id }}"> Unlike</a> | {{ post.likes.count }}
+                                        {% else %}
+                                            <a href="{% url 'post-like' %}" style="color:green;"
+                                               id="likebtn{{ post.id }}"> Like</a> | {{ post.likes.count }}
+                                        {% endif %}
+                                    </button>{% endcomment %}
+                                    <div class="col s4 btn_floating">
+
+                                        {% if post in liked_post %}
+                                            <a id="{{ post.id }}" href="{% url 'post-like' %}"
+                                               class="like btn-floating waves-effect">
+                                                <ion-icon class="ico-post-liked" style="margin: 4px 5px"
+                                                          name="thumbs-up"></ion-icon>
+                                            </a>
+                                        {% else %}
+                                            <a id="{{ post.id }}" href="{% url 'post-like' %}"
+                                               class="like btn-floating waves-effect" style="background: #aaa">
+                                                <ion-icon class="ico-post-like" style="margin: 4px 5px"
+                                                          name="thumbs-up-outline"></ion-icon>
+                                            </a>
+                                        {% endif %}
+                                        <h6 class="post-like-cnt">{{ post.likes.count }}</h6>
+                                    </div>
+                                    {% comment %}<div class="col s4 updown_btn">
+                                    <a href="#"><i class="ion-android-arrow-dropdown-circle"></i></a>
+                                    <a href="#"><i class="ion-android-arrow-dropup-circle"></i></a>
+                                    <a href="#" class="count_n">483</a>
+                                </div>{% endcomment %}
+                                    <div class="col s4 updown_btn comment_c">
+                                        <a href="{% url 'post-detail' post.id %}"><i
+                                                class="ion-ios-chatboxes-outline"></i></a>
+                                        <a href="{% url 'post-detail' post.id %}"
+                                           class="count_n">{{ post.details.count }}</a>
+                                    </div>
+
+
+                                    {#                                    <button class="btn btn-white mr-3 like" id="{{ post.id }}">#}
+                                    {#                                        {% if post in liked_post %}#}
+                                    {#                                            <a href="{% url 'post-like' %}" style="color:red;"#}
+                                    {#                                               id="likebtn{{ post.id }}"> Unlike</a> | {{ post.likes.count }}#}
+                                    {#                                        {% else %}#}
+                                    {#                                            <a href="{% url 'post-like' %}" style="color:green;"#}
+                                    {#                                               id="likebtn{{ post.id }}"> Like</a> | {{ post.likes.count }}#}
+                                    {#                                        {% endif %}#}
+                                    {#                                    </button>#}
+                                    {#                                    <a class="btn btn-outline-info" href="{% url 'post-detail' post.id %}">Comments#}
+                                    {#                                        | {{ post.details.count }}</a>#}
+                                </div>
+                            </div><!-- End Post -->
+                        {% endfor %}
+                    </div>
+
+
+                    {% comment %}<div class="col-md-8">
+                        {% for post in posts %}
+                            <div class="card card-signin my-5">
+                                <div class="card-body">
+                                    <a href="{{ post.user_name.profile.get_absolute_url }}"><img
+                                            src="{{ post.user_name.profile.image.url }}" class="rounded-circle"
+                                            width="30" height="30" alt=""></a>
+                                    <a class="text-dark"
+                                       href="{{ post.user_name.profile.get_absolute_url }}"><b>{{ post.user_name }}</b></a>
+                                    <br><small class="text-muted">Posted on {{ post.date_posted }}</small>
+                                    <br><br>
+                                    <p class="card-text text-dark">{{ post.description }}</p>
+                                </div>
+                                <a href="{% url 'post-detail' post.id %}"><img class="card-img-top"
+                                                                               src="{{ post.pic.url }}" alt=""></a>
+                                {% if post.tags %}
+                                    <br>
+                                    <p class="text-danger ml-3"><b>Tags: <i>{{ post.tags }}</i></b></p>
+                                {% endif %}
+                                <div class="card-footer">
+                                    <button class="btn btn-white mr-3 like" id="{{ post.id }}">
+                                        {% if post in liked_post %}
+                                            <a href="{% url 'post-like' %}" style="color:red;"
+                                               id="likebtn{{ post.id }}"> Unlike</a> | {{ post.likes.count }}
+                                        {% else %}
+                                            <a href="{% url 'post-like' %}" style="color:green;"
+                                               id="likebtn{{ post.id }}"> Like</a> | {{ post.likes.count }}
+                                        {% endif %}
+                                    </button>
+                                    <a class="btn btn-outline-info" href="{% url 'post-detail' post.id %}">Comments
+                                        | {{ post.details.count }}</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>{% endcomment %}
+                    <a href="load-mor.html" class="load-mor"></a>
+                </div>
+            </div>
+            <!-- left side bar -->
+            <div class="col">
+                {% include "feed/left_sidebar.html" %}
+            </div>
+            <!-- Right side bar -->
+            <div class="right_side_bar col">
+                {% include "feed/right_sidebar.html" %}
+            </div>
+        </div>
+    </section>
+    <!-- End Min Container area -->
+
+
+
+
+{% endblock content %}
+
+{% block jsfiles %}
+    <script>
+        $(".like").click(function (e) {
+            var id = this.id;
+            {#var href = $('.like').find('a').attr('href');#}
+            var href = $(this).attr('href');
+            var that = $(this);
+            var likeCountBox = $(this).parent().find('.post-like-cnt');
+            var currentLike = parseInt(likeCountBox.html());
+            if(currentLike < 0 ){ currentLike = 0; }
+            e.preventDefault();
+
+            $.ajax({
+                url: href,
+                data: {
+                    'likeId': id
+                },
+                success: function (response) {
+                    if (response.liked) {
+                        currentLike++;
+                        likeCountBox.html(currentLike);
+                        that.css("background", "#ff7043");
+                        that.html('<ion-icon class="ico-post-liked" style="margin: 4px 5px" name="thumbs-up"></ion-icon>');
+                    } else {
+                        currentLike--;
+                        likeCountBox.html(currentLike);
+                        that.css("background", "#aaa");
+                        that.html('<ion-icon class="ico-post-like" style="margin: 4px 5px" name="thumbs-up-outline"></ion-icon>');
+                    }
+                }
+            })
+        });
+    </script>
+{% endblock jsfiles %}

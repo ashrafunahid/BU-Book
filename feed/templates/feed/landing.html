@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Fjalla+One|Monoton|Montserrat:100,200,300,400,500,600,700"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/landing_style.css' %}">
+    <title>BU Community</title>
+</head>
+
+<body>
+<section class="graybox">
+    <div data-edit="text" class="free-automobile-sec" style="background-image: url({% static 'images/banner-1.jpg' %})">
+        <h4>Come together &</h4>
+        <h2 data-edit="text">share your self...</h2>
+        <h3 data-edit="text" style="font-family:Verdana; text-align: justify;">
+            This is community a site for Bangladesh University Students and Autority Only, where everyone can share
+            their feelings, thaughts, noats, solutions, experience and emotions. This community will help everyone in Bangladesh
+            University to stay closer.
+        </h3>
+        <div class="free-automobile-sec-1">
+            <p>
+                <span>
+                <img src="{% static 'images/okay-icon.png' %}" alt=""><a href="{% url 'register' %}">Register</a>
+                </span>
+                <span>
+                <img src="{% static 'images/okay-icon.png' %}" alt=""><a href="{% url 'register' %}">find local friends</a>
+                </span>
+                <span>
+                <img src="{% static 'images/okay-icon.png' %}" alt=""><a href="{% url 'register' %}">Free</a>
+            </span>
+            </p>
+        </div>
+        <div class="free-automobile-sec-1">
+            <button class="free-automobile-btn-1" type="submit" onclick="window.location.href='{% url 'register' %}'">
+                register now
+            </button>
+            <button class="free-automobile-btn-2" type="submit" onclick="window.location.href='{% url 'login' %}'">sign
+                in
+            </button>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>
